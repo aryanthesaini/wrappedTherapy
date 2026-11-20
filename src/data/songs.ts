@@ -54,3 +54,6 @@ export function findSong(title: string, artistHint?: string): Song | undefined {
   }
   return best?.s;
 }
+
+/** All catalogue songs with exactly this title (case/punctuation-insensitive). */
+export const songsByTitle = (title: string): Song[] => BY_TITLE.get(compact(title)) ?? [];

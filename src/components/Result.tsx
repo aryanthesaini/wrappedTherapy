@@ -4,6 +4,7 @@ import { CONDITION_BY_ID } from '../data/conditions';
 import { recommendTherapists } from '../data/therapists';
 import TherapistCard from './TherapistCard';
 import Burst from './Burst';
+import ShareSheet from './ShareSheet';
 import { Ekg, Mascot } from './Doodles';
 
 interface Props {
@@ -40,7 +41,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
   const cond = CONDITION_BY_ID[d.primary];
   const [revealed, setRevealed] = useState(reduceMotion());
   const [line, setLine] = useState(0);
-  const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const therapists = useMemo(() => recommendTherapists(d.primary, d.secondary, city || undefined), [d, city]);
   const pct = (n: number) => `${Math.round(n * 100)}%`;
@@ -54,15 +55,6 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
     const b = setTimeout(() => setRevealed(true), 2700);
     return () => { clearInterval(a); clearTimeout(b); };
   }, [revealed]);
-
-  const share = async () => {
-    const text = `Dr. Playlist diagnosed my ${data.year} recap: ${cond.emoji} ${cond.short} (${pct(d.confidence)} match). ${d.headline}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    } catch { /* clipboard blocked */ }
-  };
 
   if (!revealed) {
     return (
@@ -78,6 +70,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
 
   return (
     <div className="result" style={{ ['--accent' as string]: cond.color }}>
+      {sharing && <ShareSheet diagnosis={d} data={data} onClose={() => setSharing(false)} />}
       {/* 1 · the diagnosis */}
       <section className="wrap rx-wrap">
         <Burst emojis={[cond.emoji, '♪', '💊', cond.emoji, '♫']} />
@@ -114,7 +107,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
           </div>
         </article>
         <div className="hero-cta center">
-          <button className="cta" onClick={share}>{copied ? 'Copied! Go flex it' : 'Share my diagnosis'} <span className="cta-arrow">↗</span></button>
+          <button className="cta" onClick={() => setSharing(true)}>Share my diagnosis <span className="cta-arrow">↗</span></button>
           <button className="text-link" onClick={onEdit}>edit artists</button>
           <button className="text-link" onClick={onRestart}>new recap</button>
         </div>

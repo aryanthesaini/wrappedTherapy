@@ -1,6 +1,6 @@
 import type { Platform, WrappedData } from '../types';
 import { compact, matchArtist } from './fuzzy';
-import { findSong } from '../data/songs';
+import { findSong, songsByTitle } from '../data/songs';
 
 /**
  * Turns OCR lines (text + position) into WrappedData, and decides whether the
@@ -24,7 +24,7 @@ export interface Diagnostics {
   headings: string[];
   matched: MatchedLine[];
   unknown: string[];
-  songMode?: 'paired' | 'titles-only';
+  songMode?: 'paired' | 'titles-only' | 'catalog-scan';
   pass?: string;
 }
 
@@ -184,7 +184,7 @@ export function extractWrapped(lines: OcrLine[], fallbackPlatform: Platform): Pa
   }
 
   // ── songs section ──
-  const { songs, mode: songMode } = extractSongs(sectionLines('songs'), matched);
+  let { songs, mode: songMode } = extractSongs(sectionLines('songs'), matched);
   numberedLines += sectionLines('songs').filter((l) => cleanLine(l.text).numbered).length;
 
   // ── genre ──
@@ -204,7 +204,17 @@ export function extractWrapped(lines: OcrLine[], fallbackPlatform: Platform): Pa
   const year = years.length ? Math.max(...years) : new Date().getFullYear();
   const platform = PLATFORM_HINTS.find(([re]) => re.test(rawText))?.[1] ?? fallbackPlatform;
 
-  const known = matched.filter((m) => m.section === 'artists').length;
+  const known0 = matched.filter((m) => m.section === 'artists').length;
+  if (known0 === 0 && !songs.some((s) => s.artist)) {
+    // Last resort: no artist we know anywhere. Look every line up as a song title in the catalogue.
+    const recapish = keywordHits.length > 0 || hasSections;
+    const found = scanForSongs(ordered.filter((l) => !isHeading(l)), matched);
+    if (found.length >= (recapish ? 1 : 3)) {
+      songs = found;
+      songMode = 'catalog-scan';
+    }
+  }
+  const known = known0;
   const songArtists = songs.filter((s) => s.artist).length;
 
   // A songs-only card: rank artists by how often (and how high) they appear in the songs.
@@ -232,7 +242,7 @@ export function extractWrapped(lines: OcrLine[], fallbackPlatform: Platform): Pa
   if (rawText.replace(/\s/g, '').length < 12) {
     return { ok: false, kind: 'not_recap', title: 'There\'s barely any text here.', message: 'We need a screenshot with your top artists or songs written on it.', diag };
   }
-  const recapLike = keywordHits.length > 0 || hasSections;
+  const recapLike = keywordHits.length > 0 || hasSections || (songMode === 'catalog-scan' && songArtists >= 3);
 
   if (!recapLike) {
     // No recap wording at all: only accept a tight, numbered list of artists we know (e.g. a cropped card).
@@ -266,7 +276,7 @@ export function extractWrapped(lines: OcrLine[], fallbackPlatform: Platform): Pa
  *  - paired: a title line with a credit line under it (YouTube Music, Apple Music, Spotify list)
  *  - titles-only: numbered titles with no credits (Spotify summary card); artists come from the song catalogue
  */
-function extractSongs(lines: OcrLine[], matched: MatchedLine[]): { songs: WrappedData['topSongs']; mode: 'paired' | 'titles-only' } {
+function extractSongs(lines: OcrLine[], matched: MatchedLine[]): { songs: WrappedData['topSongs']; mode: 'paired' | 'titles-only' | 'catalog-scan' } {
   const cleaned = lines.map((l) => ({ l, ...cleanLine(l.text) })).filter((x) => x.cleaned);
   const credits = new Map<OcrLine, ReturnType<typeof parseCredits>>();
   for (const x of cleaned) {
@@ -314,7 +324,9 @@ function extractSongs(lines: OcrLine[], matched: MatchedLine[]): { songs: Wrappe
   // Titles-only: numbered lines, maybe "Title · Artist" on one line, else look the title up.
   const songs: WrappedData['topSongs'] = [];
   for (const x of cleaned) {
-    if (!x.numbered || !looksLikeTitle(x.cleaned, x.l.confidence) && !/^\d{2,4}$/.test(x.cleaned)) continue;
+    const ranked = x.numbered && (looksLikeTitle(x.cleaned, x.l.confidence) || /^\d{2,4}$/.test(x.cleaned));
+    // Un-numbered lines count only if they are a song we know (and not an artist credit line).
+    if (!ranked && (credits.has(x.l) || !findSong(x.cleaned))) continue;
     const parts = x.cleaned.split(/\s+[·•|–—-]\s+/);
     let title = x.cleaned;
     let known: string[] = [];
@@ -330,5 +342,40 @@ function extractSongs(lines: OcrLine[], matched: MatchedLine[]): { songs: Wrappe
     if (known.length) matched.push({ line: x.l.text.trim(), artist: known.join(', '), score: catalog ? 0.9 : 1, section: 'songs' });
     songs.push({ title: catalog?.title ?? title, artist: known[0] ?? '', artists: known });
   }
-  return { songs, mode: 'titles-only' };
+  return { songs: preferContext(songs), mode: 'titles-only' };
+}
+
+/** Every line that is (fuzzily) a catalogue song title, top to bottom, deduped. */
+function scanForSongs(lines: OcrLine[], matched: MatchedLine[]): WrappedData['topSongs'] {
+  const out: WrappedData['topSongs'] = [];
+  const seen = new Set<string>();
+  for (const l of lines) {
+    const { cleaned } = cleanLine(l.text);
+    if (!cleaned || l.confidence < 50 || (cleaned.match(/\p{L}/gu)?.length ?? 0) < 3) continue;
+    // Try the whole line, then "Title - Artist" style halves.
+    const candidates = [cleaned, ...cleaned.split(/\s+[·•|–—-]\s+/)];
+    const song = candidates.map((c) => findSong(c)).find(Boolean);
+    if (!song || seen.has(song.title + song.artists[0])) continue;
+    seen.add(song.title + song.artists[0]);
+    matched.push({ line: l.text.trim(), artist: song.artists.join(', '), score: 0.85, section: 'songs' });
+    out.push({ title: song.title, artist: song.artists[0], artists: song.artists });
+    if (out.length >= 10) break;
+  }
+  return preferContext(out);
+}
+
+/**
+ * Shared titles ("Die For You": The Weeknd and Joji) resolve to whichever version's artist
+ * the rest of the list points to.
+ */
+function preferContext(songs: WrappedData['topSongs']): WrappedData['topSongs'] {
+  const tally = new Map<string, number>();
+  songs.forEach((s) => s.artists?.forEach((a) => tally.set(a, (tally.get(a) ?? 0) + 1)));
+  return songs.map((s) => {
+    const versions = songsByTitle(s.title);
+    if (versions.length < 2) return s;
+    const score = (artists: string[]) => artists.reduce((n, a) => n + (tally.get(a) ?? 0) - (s.artists?.includes(a) ? 1 : 0), 0);
+    const best = [...versions].sort((a, b) => score(b.artists) - score(a.artists))[0];
+    return score(best.artists) > score(s.artists ?? []) ? { title: best.title, artist: best.artists[0], artists: best.artists } : s;
+  });
 }
