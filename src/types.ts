@@ -22,6 +22,8 @@ export interface Condition {
   /** Real, plain-language description of the condition. */
   clinical: string;
   symptoms: string[];
+  /** Short, punchy line for the share image. */
+  tagline: string;
   /** The joke: why your music "implies" this. */
   musicTell: string;
   /** Therapy approaches typically used — drives therapist matching. */

@@ -3,6 +3,7 @@ import type { Condition, ConditionId } from '../types';
 export const CONDITIONS: Condition[] = [
   {
     id: 'depression',
+    tagline: 'Professional sad-song sommelier.',
     name: 'Major Depressive Disorder',
     short: 'Depression',
     emoji: '🌧️',
@@ -15,6 +16,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'bipolar',
+    tagline: 'Crying in the club. Literally.',
     name: 'Bipolar Disorder',
     short: 'Bipolar',
     emoji: '🎢',
@@ -27,6 +29,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'anxiety',
+    tagline: 'Overthinking, now with a soundtrack.',
     name: 'Generalized Anxiety Disorder',
     short: 'Anxiety',
     emoji: '🌀',
@@ -39,6 +42,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'social_anxiety',
+    tagline: 'Headphones in. World out.',
     name: 'Social Anxiety Disorder',
     short: 'Social Anxiety',
     emoji: '🎧',
@@ -51,6 +55,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'ocd',
+    tagline: 'Same playlist. Same order. Every time.',
     name: 'Obsessive-Compulsive Disorder',
     short: 'OCD',
     emoji: '🔁',
@@ -63,6 +68,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'adhd',
+    tagline: 'Skipped this sentence at 0:31.',
     name: 'Attention-Deficit/Hyperactivity Disorder',
     short: 'ADHD',
     emoji: '⚡',
@@ -75,6 +81,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'bpd',
+    tagline: 'Every bridge is about one person.',
     name: 'Borderline Personality Disorder',
     short: 'BPD',
     emoji: '💔',
@@ -87,6 +94,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'schizophrenia',
+    tagline: 'The reverb is talking to me.',
     name: 'Schizophrenia-Spectrum',
     short: 'Schizophrenia-spectrum',
     emoji: '🌌',
@@ -99,6 +107,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'insomnia',
+    tagline: 'Peak listening hour: 3:12 AM.',
     name: 'Insomnia Disorder',
     short: 'Insomnia',
     emoji: '🌙',
@@ -111,6 +120,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'seasonal',
+    tagline: 'Romanticising rain, all year round.',
     name: 'Seasonal Affective Disorder',
     short: 'Seasonal Depression',
     emoji: '🍂',
@@ -123,6 +133,7 @@ export const CONDITIONS: Condition[] = [
   },
   {
     id: 'mania',
+    tagline: 'Unstoppable. Allegedly.',
     name: 'Hypomanic Episode',
     short: 'Hypomania',
     emoji: '🚀',
