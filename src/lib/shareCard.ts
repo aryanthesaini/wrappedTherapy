@@ -151,7 +151,7 @@ export async function renderShareCard(d: Diagnosis, data: WrappedData): Promise<
   const cx = 70;
   const cy = 230;
   const cw = 920;
-  const ch = 1150;
+  const ch = 1360;
   inkBox(ctx, cx, cy, cw, ch, 44, '#FFFFFF');
   // header band
   ctx.save();
@@ -221,6 +221,45 @@ export async function renderShareCard(d: Diagnosis, data: WrappedData): Promise<
   ctx.fillStyle = INK;
   const quote = wrapLines(ctx, `“${cond.musicTell}”`, cw - 120, 2);
   quote.forEach((l, i) => ctx.fillText(l, nameX, nameY + 150 + i * 58));
+
+  // chart: top conditions as bars
+  const chartTop = cy + 875;
+  ctx.font = `700 24px ${BODY}`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('YOUR CHART', nameX, chartTop);
+  const top = d.ranked.filter((id) => d.percentages[id] >= 0.01).slice(0, 3);
+  const trackX = cx + 380;
+  const trackW = cw - 380 - 150;
+  top.forEach((id, i) => {
+    const c = CONDITION_BY_ID[id];
+    const y = chartTop + 34 + i * 56;
+    const p = d.percentages[id];
+    ctx.fillStyle = INK;
+    ctx.font = `${i === 0 ? 700 : 500} 30px ${BODY}`;
+    const label = `${c.emoji}  ${c.short}`;
+    const lpx = fitFont(ctx, label, (s) => `${i === 0 ? 700 : 500} ${s}px ${BODY}`, trackX - nameX - 20, 30, 20);
+    ctx.font = `${i === 0 ? 700 : 500} ${lpx}px ${BODY}`;
+    ctx.fillText(label, nameX, y + 24);
+    // track + fill
+    roundRect(ctx, trackX, y, trackW, 30, 15);
+    ctx.fillStyle = PAPER;
+    ctx.fill();
+    ctx.save();
+    roundRect(ctx, trackX, y, trackW, 30, 15);
+    ctx.clip();
+    ctx.fillStyle = i === 0 ? accent : '#CDBBFF';
+    ctx.fillRect(trackX, y, Math.max(trackW * p, 6), 30);
+    ctx.restore();
+    roundRect(ctx, trackX, y, trackW, 30, 15);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = INK;
+    ctx.stroke();
+    ctx.fillStyle = i === 0 ? INK : MUTED;
+    ctx.font = `700 28px ${BODY}`;
+    ctx.textAlign = 'right';
+    ctx.fillText(`${Math.round(p * 100)}%`, cx + cw - 50, y + 25);
+    ctx.textAlign = 'left';
+  });
 
   // score dial
   const dx = cx + 150;

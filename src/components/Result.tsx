@@ -16,7 +16,6 @@ interface Props {
 }
 
 const REVEAL_LINES = ['Dr. Playlist is reviewing your case…', 'Cross-checking with your 3 AM listening…', 'Writing your prescription…'];
-const TINTS = ['a', 'b', 'c', 'd'];
 
 function useCountUp(target: number, start: boolean, ms = 1100) {
   const [v, setV] = useState(0);
@@ -42,10 +41,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
   const [revealed, setRevealed] = useState(reduceMotion());
   const [line, setLine] = useState(0);
   const [sharing, setSharing] = useState(false);
-  const [showAll, setShowAll] = useState(false);
   const therapists = useMemo(() => recommendTherapists(d.primary, d.secondary, city || undefined), [d, city]);
-  const pct = (n: number) => `${Math.round(n * 100)}%`;
-  const unit = cond.short.split(/[ -]/)[0].toLowerCase();
   const score = useCountUp(Math.round(d.confidence * 100), revealed);
   const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -65,8 +61,6 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
       </section>
     );
   }
-
-  const bars = showAll ? d.ranked : d.ranked.filter((id) => d.percentages[id] >= 0.01).slice(0, 5);
 
   return (
     <div className="result" style={{ ['--accent' as string]: cond.color }}>
@@ -129,47 +123,8 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
         </div>
       </section>
 
-      {/* 3 · why */}
-      <section className="wrap section">
-        <div className="section-head">
-          <h2 className="h2">The <em className="serif">evidence.</em></h2>
-          <p className="lede small">The artists that pushed your score the most.</p>
-        </div>
-        {d.moodSwing && (
-          <div className="swing">
-            <span className="sad" style={{ flex: d.moodSwing.sadShare }}>😭 {pct(d.moodSwing.sadShare)} crying</span>
-            <span className="hype" style={{ flex: d.moodSwing.hypeShare }}>😤 {pct(d.moodSwing.hypeShare)} hyped</span>
-          </div>
-        )}
-        <div className="note-board">
-          {d.evidence.map((e, i) => (
-            <div key={e.artist} className={`note tint-${TINTS[i % 4]}`} style={{ ['--r' as string]: `${[-2, 1.5, -1, 2][i % 4]}deg`, ['--i' as string]: i }}>
-              <strong>{e.artist}</strong>
-              <span>{e.genreLabel.toLowerCase()}</span>
-              <span className="pts">+{e.points} {unit} pts</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 4 · the full chart */}
-      <section className="wrap section split">
-        <div className="card">
-          <h3>Your chart</h3>
-          <ul className="bars">
-            {bars.map((id, i) => {
-              const c = CONDITION_BY_ID[id];
-              return (
-                <li key={id} className={i === 0 ? 'top' : ''} style={{ ['--i' as string]: i }}>
-                  <span className="bar-label">{c.emoji} {c.short}</span>
-                  <span className="bar-track"><span className="bar-fill" style={{ width: pct(d.percentages[id]) }} /></span>
-                  <span className="bar-val">{pct(d.percentages[id])}</span>
-                </li>
-              );
-            })}
-          </ul>
-          <button className="text-link" onClick={() => setShowAll(!showAll)}>{showAll ? 'show less' : `show all ${d.ranked.length}`}</button>
-        </div>
+      {/* 3 · the honest bit */}
+      <section className="wrap section real-talk-wrap">
         <details className="card real-talk">
           <summary>
             <h3>Wait, is this real?</h3>

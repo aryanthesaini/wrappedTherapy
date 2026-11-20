@@ -454,3 +454,4 @@ code { font-family: var(--f-mono); font-size: .85em; }
 .sheet-actions .cta.disabled { opacity: .4; pointer-events: none; }
 .sheet-secondary { display: flex; gap: 20px; }
 body:has(.sheet-backdrop) { overflow: hidden; }
+.real-talk-wrap .real-talk { max-width: 720px; }
