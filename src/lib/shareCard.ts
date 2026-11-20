@@ -3,14 +3,16 @@ import { CONDITION_BY_ID } from '../data/conditions';
 import { findArtist } from '../data/artists';
 
 /**
- * 1080×1920 Instagram-story PNG, styled as an album cover: the diagnosis is the
- * album title, the top conditions are the tracklist, your artists are "feat.".
+ * 1080×1920 Instagram-story PNG, "paper" style: off-white, lots of space, the
+ * diagnosis under a marker highlight, one big number, and a clear CTA.
  */
 
 const W = 1080;
 const H = 1920;
 const INK = '#141414';
 const WHITE = '#FFFFFF';
+const PAPER = '#FBF8F3';
+const MUTED = '#6E6A62';
 const DISPLAY = 'Unbounded, "Arial Black", sans-serif';
 const BODY = '"DM Sans", system-ui, sans-serif';
 const SERIF = '"Instrument Serif", Georgia, serif';
@@ -73,66 +75,76 @@ function wordmark(ctx: CanvasRenderingContext2D, x: number, y: number, color: st
   ctx.fillText('therapy', start + a + 8, y);
 }
 
-function drawAlbum({ ctx, d, data, accent, cond, top, artists, host }: Ctx) {
-  ctx.fillStyle = INK;
+function drawPaper({ ctx, d, data, accent, cond, top, artists, host }: Ctx) {
+  ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, W, H);
+  // thin rounded frame
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 4;
+  roundRect(ctx, 50, 50, W - 100, H - 100, 40);
+  ctx.stroke();
 
-  wordmark(ctx, 80, 130, WHITE);
-  ctx.textAlign = 'right'; ctx.font = `500 26px ${MONO}`; ctx.fillStyle = 'rgba(255,255,255,.6)';
-  ctx.fillText(`SIDE A · ${data.year}`, W - 80, 126);
-
-  // the record
-  const cx = W / 2, cy = 620, r = 400;
-  ctx.fillStyle = '#0a0a0a'; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 2;
-  for (let rr = r * 0.4; rr < r * 0.98; rr += 8) { ctx.beginPath(); ctx.arc(cx, cy, rr, 0, Math.PI * 2); ctx.stroke(); }
-  // shine
-  const g = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
-  g.addColorStop(0.35, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,255,0.10)'); g.addColorStop(0.65, 'rgba(255,255,255,0)');
-  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-  // label
-  ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(cx, cy, r * 0.36, 0, Math.PI * 2); ctx.fill();
-  ctx.textAlign = 'center'; ctx.font = `150px ${BODY}`;
-  ctx.fillText(cond.emoji, cx, cy + 52);
-
-  // album title
-  ctx.fillStyle = WHITE;
-  const px = fitFont(ctx, cond.short, (p) => `italic ${p}px ${SERIF}`, W - 160, 200, 96);
-  ctx.fillText(cond.short, W / 2, 1190);
-  fitFont(ctx, cond.tagline, (p) => `500 ${p}px ${BODY}`, W - 160, 40, 26); ctx.fillStyle = accent;
-  ctx.fillText(cond.tagline, W / 2, 1190 + Math.min(80, px * 0.45));
-
-  // tracklist
-  ctx.textAlign = 'left';
-  const lx = 150, rx = W - 150;
-  top.forEach((id, i) => {
-    const c = CONDITION_BY_ID[id];
-    const y = 1390 + i * 70;
-    ctx.font = `500 30px ${MONO}`; ctx.fillStyle = 'rgba(255,255,255,.45)';
-    ctx.fillText(String(i + 1).padStart(2, '0'), lx, y);
-    ctx.font = `${i === 0 ? 700 : 500} 38px ${BODY}`; ctx.fillStyle = WHITE;
-    ctx.fillText(c.short, lx + 80, y);
-    ctx.textAlign = 'right'; ctx.font = `500 32px ${MONO}`; ctx.fillStyle = i === 0 ? accent : 'rgba(255,255,255,.6)';
-    ctx.fillText(`${Math.round(d.percentages[id] * 100)}%`, rx, y);
-    ctx.textAlign = 'left';
-    ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(lx, y + 26); ctx.lineTo(rx, y + 26); ctx.stroke();
-  });
+  // header
+  wordmark(ctx, W / 2, 190, INK, 'center');
   ctx.textAlign = 'center';
-  if (artists.length) {
-    ctx.fillStyle = 'rgba(255,255,255,.7)';
-    fitFont(ctx, `feat. ${artists.join(', ')}`, (p) => `italic ${p}px ${SERIF}`, W - 260, 42, 26);
-    ctx.fillText(`feat. ${artists.join(', ')}`, W / 2, 1390 + top.length * 70 + 30);
-  }
-  // CTA
-  const ctaW = 720, ctaH = 120, ctaX = (W - ctaW) / 2, ctaY = 1690;
-  ctx.fillStyle = accent; roundRect(ctx, ctaX, ctaY, ctaW, ctaH, 60); ctx.fill();
-  ctx.fillStyle = INK; ctx.font = `700 36px ${DISPLAY}`;
-  ctx.fillText('press play on yours ▶', W / 2, ctaY + 58);
   ctx.font = `500 26px ${MONO}`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText(`MY ${data.year} DIAGNOSIS`, W / 2, 250);
+
+  // emoji
+  ctx.font = `150px ${BODY}`;
+  ctx.fillText(cond.emoji, W / 2, 560);
+
+  // diagnosis with a marker highlight
+  const nameY = 820;
+  const px = fitFont(ctx, cond.short, (p) => `italic ${p}px ${SERIF}`, W - 220, 230, 100);
+  const nw = ctx.measureText(cond.short).width;
+  ctx.fillStyle = accent;
+  ctx.fillRect(W / 2 - nw / 2 - 18, nameY - px * 0.34, nw + 36, px * 0.32);
+  ctx.fillStyle = INK;
+  ctx.fillText(cond.short, W / 2, nameY);
+
+  // tagline
+  fitFont(ctx, cond.tagline, (p) => `italic ${p}px ${SERIF}`, W - 240, 58, 34);
+  ctx.fillText(cond.tagline, W / 2, nameY + 120);
+
+  // one big number
+  const pct = Math.round(d.confidence * 100);
+  ctx.font = `900 200px ${DISPLAY}`;
+  ctx.fillText(`${pct}%`, W / 2, 1370);
+  ctx.font = `500 34px ${BODY}`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText(`match · ${d.severity.toLowerCase()}`, W / 2, 1430);
+
+  // the rest of the chart, as one quiet line
+  const rest = top.slice(1).map((id) => `${CONDITION_BY_ID[id].short.toLowerCase()} ${Math.round(d.percentages[id] * 100)}%`).join('  ·  ');
+  if (rest) {
+    ctx.fillStyle = INK;
+    fitFont(ctx, `also: ${rest}`, (p) => `500 ${p}px ${MONO}`, W - 240, 30, 20);
+    ctx.fillText(`also: ${rest}`, W / 2, 1505);
+  }
+  if (artists.length) {
+    const thanks = `thanks to ${artists.join(' & ')}`;
+    fitFont(ctx, thanks, (p) => `italic ${p}px ${SERIF}`, W - 240, 44, 28);
+    ctx.fillStyle = INK;
+    ctx.fillText(thanks, W / 2, 1585);
+  }
+
+  // CTA
+  const ctaW = 640, ctaH = 120, ctaX = (W - ctaW) / 2, ctaY = 1660;
+  ctx.fillStyle = INK;
+  roundRect(ctx, ctaX, ctaY, ctaW, ctaH, 60);
+  ctx.fill();
+  ctx.fillStyle = WHITE;
+  ctx.font = `700 38px ${DISPLAY}`;
+  ctx.fillText('get yours →', W / 2, ctaY + 58);
+  ctx.font = `500 26px ${MONO}`;
+  ctx.fillStyle = accent;
   ctx.fillText(host, W / 2, ctaY + 96);
-  ctx.font = `500 22px ${BODY}`; ctx.fillStyle = 'rgba(255,255,255,.45)';
-  ctx.fillText('a parody · not medical advice', W / 2, 1870);
+
+  ctx.font = `500 22px ${BODY}`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText('a parody · not medical advice', W / 2, 1835);
 }
 
 export async function renderShareCard(d: Diagnosis, data: WrappedData): Promise<Blob> {
@@ -153,6 +165,6 @@ export async function renderShareCard(d: Diagnosis, data: WrappedData): Promise<
     artists: data.topArtists.filter((a) => findArtist(a)).slice(0, 2),
     host: location.host || 'wrappedtherapy',
   };
-  drawAlbum(c);
+  drawPaper(c);
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'));
 }
