@@ -78,6 +78,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
 
   return (
     <div className="result" style={{ ['--accent' as string]: cond.color }}>
+      {/* 1 · the diagnosis */}
       <section className="wrap rx-wrap">
         <Burst emojis={[cond.emoji, '♪', '💊', cond.emoji, '♫']} />
         <article className="rx">
@@ -89,28 +90,28 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
             <span className="rx-date">{today}</span>
           </header>
           <div className="rx-body">
-            <span className="rx-symbol">℞</span>
             <div className="rx-main">
-              <span className="kicker">your {data.year} diagnosis</span>
+              <span className="kicker">℞ your {data.year} diagnosis</span>
               <h1 className="dx-name">
-                <span className="dx-emoji">{cond.emoji}</span> <em className="serif-hl">{cond.short}</em>
+                <span className="dx-emoji">{cond.emoji}</span>
+                <em className="serif-hl">{cond.short}</em>
               </h1>
               <p className="dx-formal">{cond.name}</p>
               <p className="dx-headline">“{d.headline}”</p>
               {d.secondary.length > 0 && (
-                <p className="dx-side">
-                  with a side of {d.secondary.map((s) => CONDITION_BY_ID[s].short.toLowerCase()).join(' & ')}
-                </p>
+                <p className="dx-side">with a side of {d.secondary.map((s) => CONDITION_BY_ID[s].short.toLowerCase()).join(' & ')}</p>
               )}
             </div>
-            <div className="gauge" style={{ ['--p' as string]: score }}>
-              <div className="gauge-inner">
-                <b>{score}%</b>
-                <span>{d.severity.toLowerCase()}</span>
+            <aside className="rx-side">
+              <div className="gauge" style={{ ['--p' as string]: score }}>
+                <div className="gauge-inner">
+                  <b>{score}%</b>
+                  <span>{d.severity.toLowerCase()}</span>
+                </div>
               </div>
-            </div>
+              <span className="rx-stamp">diagnosed</span>
+            </aside>
           </div>
-          <span className="stamp big">diagnosed</span>
         </article>
         <div className="hero-cta center">
           <button className="cta" onClick={share}>{copied ? 'Copied! Go flex it' : 'Share my diagnosis'} <span className="cta-arrow">↗</span></button>
@@ -119,8 +120,28 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
         </div>
       </section>
 
+      {/* 2 · who to talk to */}
+      <section className="wrap section therapists">
+        <div className="section-head">
+          <div>
+            <span className="kicker">your care team</span>
+            <h2 className="h2">Therapists who <em className="serif">get it.</em></h2>
+          </div>
+          <p className="lede small">
+            Picked for {cond.short.toLowerCase()}{city ? ` near ${city}` : ''}. They usually work with {cond.treatments.slice(0, 2).join(' and ')}.
+          </p>
+        </div>
+        <div className="t-grid">
+          {therapists.map((t, i) => <TherapistCard key={t.id} t={t} highlight={d.primary} index={i} />)}
+        </div>
+      </section>
+
+      {/* 3 · why */}
       <section className="wrap section">
-        <h2 className="h2">The <em className="serif">evidence.</em></h2>
+        <div className="section-head">
+          <h2 className="h2">The <em className="serif">evidence.</em></h2>
+          <p className="lede small">The artists that pushed your score the most.</p>
+        </div>
         {d.moodSwing && (
           <div className="swing">
             <span className="sad" style={{ flex: d.moodSwing.sadShare }}>😭 {pct(d.moodSwing.sadShare)} crying</span>
@@ -129,7 +150,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
         )}
         <div className="note-board">
           {d.evidence.map((e, i) => (
-            <div key={e.artist} className={`note tint-${TINTS[i % 4]}`} style={{ ['--r' as string]: `${[-3, 2, -1.5, 3][i % 4]}deg`, ['--i' as string]: i }}>
+            <div key={e.artist} className={`note tint-${TINTS[i % 4]}`} style={{ ['--r' as string]: `${[-2, 1.5, -1, 2][i % 4]}deg`, ['--i' as string]: i }}>
               <strong>{e.artist}</strong>
               <span>{e.genreLabel.toLowerCase()}</span>
               <span className="pts">+{e.points} {unit} pts</span>
@@ -138,6 +159,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
         </div>
       </section>
 
+      {/* 4 · the full chart */}
       <section className="wrap section split">
         <div className="card">
           <h3>Your chart</h3>
@@ -163,16 +185,8 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
           <p>
             No. Music taste can't diagnose anything. But {cond.short.toLowerCase()} is real: {cond.clinical.charAt(0).toLowerCase() + cond.clinical.slice(1)}
           </p>
-          <p className="fine">If this actually sounds like you, talking to someone helps. That's what the people below are for.</p>
+          <p className="fine">If this actually sounds like you, talking to someone helps. That's what the people above are for.</p>
         </details>
-      </section>
-
-      <section className="wrap section">
-        <h2 className="h2">Therapists who <em className="serif">get it.</em></h2>
-        <p className="lede small">Picked for {cond.short.toLowerCase()}{city ? ` near ${city}` : ''}.</p>
-        <div className="t-grid">
-          {therapists.map((t, i) => <TherapistCard key={t.id} t={t} highlight={d.primary} index={i} />)}
-        </div>
       </section>
     </div>
   );

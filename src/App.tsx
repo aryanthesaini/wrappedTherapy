@@ -24,7 +24,8 @@ const emptyWrapped = (platform: Platform): WrappedData => ({
 export default function App() {
   const [tab, setTab] = useState<'app' | 'lab'>('app');
   const [step, setStep] = useState<Step>('upload');
-  const [platform, setPlatform] = useState<Platform>('spotify');
+  /** Fallback only: the reader detects the platform from the screenshot text. */
+  const platform: Platform = 'spotify';
   const [preview, setPreview] = useState<string>();
   const [progress, setProgress] = useState<ParseProgress>({ stage: 'checking' });
   const [rejection, setRejection] = useState<Rejection>();
@@ -101,7 +102,7 @@ export default function App() {
         ) : (
           <>
             {step === 'upload' && (
-              <Upload platform={platform} onPlatform={setPlatform} onFile={onFile} onManual={() => onManual()} />
+              <Upload onFile={onFile} onManual={() => onManual()} />
             )}
             {step === 'scanning' && <Scanning preview={preview} progress={progress} />}
             {step === 'rejected' && rejection && (

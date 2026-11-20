@@ -46,7 +46,14 @@ export function Vinyl({ label, speed = 'normal', className = '' }: { label?: Rea
     <div className={`vinyl ${speed} ${className}`} aria-hidden="true">
       <div className="vinyl-disc">
         <div className="vinyl-shine" />
-        <div className="vinyl-label">{label ?? <span className="vinyl-text">WT · 2025</span>}</div>
+        <div className="vinyl-label">
+          {label ?? (
+            <>
+              <span className="vinyl-text top">wrapped</span>
+              <span className="vinyl-text bottom">therapy</span>
+            </>
+          )}
+        </div>
         <div className="vinyl-hole" />
       </div>
       <svg className="tonearm" viewBox="0 0 120 220">
