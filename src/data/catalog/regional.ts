@@ -90,7 +90,7 @@ export const ARTISTS: ArtistRow[] = [
   ['Swaroop Khan', 'IN', ['regional_folk']],
   ['Manganiyar Seduction', 'IN', ['regional_folk'], ['the manganiyar seduction']],
   ['Zubeen Garg', 'IN', ['regional_folk', 'bollywood_romantic'], ['zubeen']],
-  ['Human Sagar', 'IN', ['regional_folk']],
+  ['Human Sagar', 'IN', ['regional_folk'], ['humane sagar']],
 
   // ── Hindustani / Carnatic classical ─────────────────────────────
   ['Pandit Jasraj', 'IN', ['classical_indian', 'devotional'], ['pt. jasraj', 'jasraj']],

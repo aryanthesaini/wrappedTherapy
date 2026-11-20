@@ -13,7 +13,7 @@ export const ARTISTS: ArtistRow[] = [
   ['Sez on the Beat', 'IN', ['desi_hiphop'], ['sez', 'sez on the beat']],
   ['Bharg', 'IN', ['desi_hiphop', 'rnb']],
   ['Raga', 'IN', ['desi_hiphop']],
-  ['Fotty Seven', 'IN', ['desi_hiphop'], ['47', 'fotty 7']],
+  ['Fotty Seven', 'IN', ['desi_hiphop'], ['fotty 7']],
   ['Panther', 'IN', ['desi_hiphop']],
   ['MC Altaf', 'IN', ['desi_hiphop']],
   ['Tsumyoki', 'IN', ['desi_hiphop', 'rnb']],

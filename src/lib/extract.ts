@@ -1,5 +1,5 @@
 import type { Platform, WrappedData } from '../types';
-import { matchArtist } from './fuzzy';
+import { compact, matchArtist } from './fuzzy';
 import { findSong } from '../data/songs';
 
 /**
@@ -97,7 +97,8 @@ function matchLine(text: string) {
   if (words.length > 6) return null;
   for (let n = words.length - 1; n >= 1; n--) {
     const m = matchArtist(words.slice(0, n).join(' '));
-    if (m) return m;
+    // Short names ("King", "fun.", "Jal") only count when they are the whole line, never a prefix.
+    if (m && compact(m.artist.name).length > 4) return m;
   }
   return null;
 }
@@ -110,7 +111,7 @@ export function parseCredits(text: string): { known: string[]; parts: string[] }
   const whole = matchArtist(text);
   if (whole) return { known: [whole.artist.name], parts: [text] };
   const parts = text
-    .split(/\s*,\s*|\s+(?:and|&|x|×|feat\.?|ft\.?|with)\s+/i)
+    .split(/\s*,\s*|\s+(?:and|aur|&|x|×|feat\.?|ft\.?|with)\s+/i)
     .map((p) => p.trim())
     .filter(Boolean);
   const known: string[] = [];
