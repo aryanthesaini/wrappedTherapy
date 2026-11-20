@@ -273,23 +273,27 @@ function extractSongs(lines: OcrLine[], matched: MatchedLine[]): { songs: Wrappe
     if (c.known.length) credits.set(x.l, c);
   }
 
-  // Pair each credit line with the closest non-credit line just above it in the same column.
+  // Pair each credit line with the closest unused line just above it in the same column, top to bottom.
+  // A line only becomes a "credit" once it pairs, so a song titled like an artist ("Ghost") can still be a title.
   const pairs: { title: (typeof cleaned)[number]; credit: OcrLine }[] = [];
-  const usedTitles = new Set<OcrLine>();
-  for (const x of cleaned) {
-    if (!credits.has(x.l)) continue;
+  const used = new Set<OcrLine>();
+  const byY = [...cleaned].sort((a, b) => a.l.bbox.y0 - b.l.bbox.y0);
+  for (const x of byY) {
+    if (!credits.has(x.l) || used.has(x.l)) continue;
     const h = x.l.bbox.y1 - x.l.bbox.y0;
     let best: { t: (typeof cleaned)[number]; cost: number } | null = null;
-    for (const t of cleaned) {
-      if (t.l === x.l || credits.has(t.l) || usedTitles.has(t.l)) continue;
+    for (const t of byY) {
+      if (t.l === x.l || used.has(t.l)) continue;
       const dy = x.l.bbox.y0 - t.l.bbox.y1;
       if (dy < -h * 0.3 || dy > h * 2.5) continue;
       if (!looksLikeTitle(t.cleaned, t.l.confidence)) continue;
-      const cost = Math.max(dy, 0) + 3 * Math.abs(x.l.bbox.x0 - t.l.bbox.x0);
+      // Prefer real titles over lines that also look like credits.
+      const cost = Math.max(dy, 0) + 3 * Math.abs(x.l.bbox.x0 - t.l.bbox.x0) + (credits.has(t.l) ? h : 0);
       if (!best || cost < best.cost) best = { t, cost };
     }
     if (best) {
-      usedTitles.add(best.t.l);
+      used.add(best.t.l);
+      used.add(x.l);
       pairs.push({ title: best.t, credit: x.l });
     }
   }
