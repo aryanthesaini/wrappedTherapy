@@ -86,6 +86,7 @@ export default function App() {
             <span>wrapped<em>therapy</em></span>
           </button>
           <div className="nav-right">
+            <a className="nav-credit" href="https://instagram.com/dietcokecode" target="_blank" rel="noreferrer">@dietcokecode</a>
             {DEBUG && (
               <button className="nav-link" onClick={() => setTab(tab === 'lab' ? 'app' : 'lab')}>
                 {tab === 'lab' ? 'back to app' : 'data lab'}

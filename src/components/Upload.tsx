@@ -53,6 +53,11 @@ export default function Upload({ onFile, onManual }: Props) {
               </button>
               <button className="text-link" onClick={onManual}>or type my artists</button>
             </div>
+            <p className="hero-byline">
+              built by{' '}
+              <a href="https://instagram.com/dietcokecode" target="_blank" rel="noreferrer">@dietcokecode</a>
+              {' '}on instagram
+            </p>
           </div>
           <div className="hero-art">
             <div className="blob" />

@@ -64,7 +64,7 @@ export default function Result({ diagnosis: d, data, city, onRestart, onEdit }: 
 
   return (
     <div className="result" style={{ ['--accent' as string]: cond.color }}>
-      {sharing && <ShareSheet diagnosis={d} data={data} onClose={() => setSharing(false)} />}
+      {sharing && <ShareSheet diagnosis={d} data={data} therapists={therapists} onClose={() => setSharing(false)} />}
       {/* 1 · the diagnosis */}
       <section className="wrap rx-wrap">
         <Burst emojis={[cond.emoji, '♪', '💊', cond.emoji, '♫']} />

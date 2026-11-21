@@ -84,6 +84,8 @@ code { font-family: var(--f-mono); font-size: .85em; }
 .nav-link:hover { background: var(--note-b); }
 .nav-cta { font-size: 14px; font-weight: 700; background: var(--fg); color: var(--bg); border-radius: 999px; padding: 9px 16px; transition: transform .2s var(--spring); }
 .nav-cta:hover { transform: rotate(-2deg) scale(1.04); }
+.nav-credit { font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; letter-spacing: .01em; }
+.nav-credit:hover { color: var(--fg); }
 
 /* ── buttons ───────────────────────────── */
 .cta {
@@ -118,6 +120,9 @@ code { font-family: var(--f-mono); font-size: .85em; }
 .hero h1 { font-weight: 900; font-size: clamp(38px, 5.3vw, 80px); line-height: 1.04; letter-spacing: -.04em; animation: rise .8s .05s var(--out) both; }
 .hero .lede { animation: rise .7s .35s var(--out) both; }
 .hero .hero-cta, .hero .kicker { animation: rise .7s .5s var(--out) both; }
+.hero-byline { font-size: 13px; color: var(--muted); margin-top: 4px; animation: rise .7s .6s var(--out) both; }
+.hero-byline a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.hero-byline a:hover { color: var(--fg); }
 @keyframes rise { from { opacity: 0; transform: translateY(36px); } }
 .strike { position: relative; display: inline-block; color: var(--muted); }
 .squiggle { position: absolute; left: -4%; top: 50%; width: 108%; height: .32em; overflow: visible; pointer-events: none; }

@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { Diagnosis, WrappedData } from '../types';
+import type { Diagnosis, Therapist, WrappedData } from '../types';
 import { CONDITION_BY_ID } from '../data/conditions';
 import { renderShareCard } from '../lib/shareCard';
 
 interface Props {
   diagnosis: Diagnosis;
   data: WrappedData;
+  therapists: Therapist[];
   onClose: () => void;
 }
 
 /** Preview of the story image, with native share (Instagram, WhatsApp…) or download. */
-export default function ShareSheet({ diagnosis, data, onClose }: Props) {
+export default function ShareSheet({ diagnosis, data, therapists, onClose }: Props) {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState<string>();
   const [status, setStatus] = useState<string>();
@@ -21,7 +22,7 @@ export default function ShareSheet({ diagnosis, data, onClose }: Props) {
   useEffect(() => {
     let alive = true;
     let objectUrl: string | undefined;
-    renderShareCard(diagnosis, data).then((blob) => {
+    renderShareCard(diagnosis, data, therapists).then((blob) => {
       if (!alive) return;
       const f = new File([blob], `wrapped-therapy-${cond.short.toLowerCase().replace(/\W+/g, '-')}.png`, { type: 'image/png' });
       objectUrl = URL.createObjectURL(blob);
@@ -35,7 +36,7 @@ export default function ShareSheet({ diagnosis, data, onClose }: Props) {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       window.removeEventListener('keydown', onKey);
     };
-  }, [diagnosis, data, cond.short, onClose]);
+  }, [diagnosis, data, therapists, cond.short, onClose]);
 
   const canShareFile = !!file && typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
 
