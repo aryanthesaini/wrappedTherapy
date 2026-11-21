@@ -22,7 +22,7 @@ export const CONDITIONS: Condition[] = [
     emoji: '🎢',
     color: '#c084fc',
     clinical:
-      'A condition involving episodes of depression alternating with episodes of mania or hypomania: unusually elevated mood, energy and activity.',
+      'A condition involving episodes of depression alternating with episodes of mania: unusually elevated mood, energy and activity.',
     symptoms: ['Depressive episodes', 'Manic or hypomanic episodes', 'Reduced need for sleep during highs', 'Racing thoughts', 'Impulsivity during highs'],
     musicTell: 'Your queue goes from sobbing in the shower to doing donuts in a parking lot, with no transition.',
     treatments: ['Psychoeducation', 'IPSRT', 'CBT'],
@@ -134,8 +134,8 @@ export const CONDITIONS: Condition[] = [
   {
     id: 'mania',
     tagline: 'Unstoppable. Allegedly.',
-    name: 'Hypomanic Episode',
-    short: 'Hypomania',
+    name: 'Manic Episode',
+    short: 'Mania',
     emoji: '🚀',
     color: '#eab308',
     clinical:

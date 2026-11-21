@@ -3,7 +3,7 @@ import { Equalizer, FloatingNotes, Mascot, Squiggle, Vinyl } from './Doodles';
 
 const MARQUEE = [
   'arijit singh → depression 🌧️',
-  'karan aujla → hypomania 🚀',
+  'karan aujla → mania 🚀',
   'arijit + aujla → bipolar 🎢',
   'the weeknd → insomnia 🌙',
   'pink floyd → the reverb is talking 🌌',
@@ -11,7 +11,7 @@ const MARQUEE = [
   'taylor swift → a bridge about one person 💔',
   'prateek kuhad → social anxiety 🎧',
   'jagjit singh → 3 am ghazals 🥃',
-  'seedhe maut → hypomania 🚀',
+  'seedhe maut → mania 🚀',
 ];
 
 interface Props {
