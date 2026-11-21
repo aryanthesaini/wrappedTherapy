@@ -235,10 +235,11 @@ code { font-family: var(--f-mono); font-size: .85em; }
 /* ── review ────────────────────────────── */
 .review-head { display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; margin-bottom: 36px; }
 .thumb { width: 104px; height: 168px; object-fit: cover; border-radius: 14px; border: 1.5px solid var(--line); box-shadow: 4px 4px 0 var(--line); transform: rotate(5deg); }
-.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
 .review-grid.single { grid-template-columns: minmax(0, 640px); }
-.card { position: relative; background: var(--card); border: 1.5px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: 4px 4px 0 var(--line); }
+.card { position: relative; background: var(--card); border: 1.5px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: 4px 4px 0 var(--line); display: flex; flex-direction: column; }
 .card h3 { font-weight: 700; font-size: 20px; margin-bottom: 14px; }
+.card .list { flex: 1; overflow-y: auto; max-height: 320px; }
 .pop-in { animation: pop-in .55s var(--spring) both; }
 .pop-in.delay { animation-delay: .12s; }
 @keyframes pop-in { from { opacity: 0; transform: translateY(24px) scale(.97); } }
