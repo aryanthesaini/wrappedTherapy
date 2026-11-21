@@ -4,10 +4,9 @@ import { CONDITION_BY_ID } from '../data/conditions';
 const TINTS = ['a', 'b', 'c', 'd'];
 
 export default function TherapistCard({ t, highlight, index = 0 }: { t: Therapist; highlight: ConditionId; index?: number }) {
-  const initials = t.name.replace('Dr. ', '').split(' ').map((p) => p[0]).join('');
+  const initials = t.name.replace('Dr. ', '').replace('Mr. ', '').replace('Ms. ', '').split(' ').map((p) => p[0]).join('').slice(0, 2);
   return (
     <article className="t-card" style={{ ['--i' as string]: index }}>
-      <span className="t-fictional">fictional</span>
       <div className="t-top">
         <div className={`avatar tint-${TINTS[t.hue % 4]}`}>{initials}</div>
         <div className="grow">
@@ -23,10 +22,12 @@ export default function TherapistCard({ t, highlight, index = 0 }: { t: Therapis
       </div>
       <div className="t-facts">
         <span>📍 {t.city} · {t.mode}</span>
-        <span>★ {t.rating} <i>({t.reviews})</i></span>
-        <span>₹{t.feeInr.toLocaleString('en-IN')}/session</span>
+        {t.feeInr != null && <span>₹{t.feeInr.toLocaleString('en-IN')}/session</span>}
       </div>
-      <button className="btn block" onClick={() => alert('Booking is not wired up yet.')}>Book a session</button>
+      {t.profileUrl
+        ? <a className="btn block" href={t.profileUrl} target="_blank" rel="noopener noreferrer">View profile on Practo ↗</a>
+        : <button className="btn block" disabled>Profile unavailable</button>
+      }
     </article>
   );
 }

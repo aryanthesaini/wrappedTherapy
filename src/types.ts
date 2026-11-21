@@ -58,12 +58,13 @@ export interface Therapist {
   city: string;
   mode: 'Online' | 'In-person' | 'Hybrid';
   languages: string[];
-  feeInr: number;
+  feeInr: number | null;
   experienceYears: number;
-  rating: number;
-  reviews: number;
+  rating?: number;
+  reviews?: number;
   bio: string;
   hue: number;
+  profileUrl?: string;
 }
 
 export type Platform = 'spotify' | 'youtube' | 'apple' | 'amazon';

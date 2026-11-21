@@ -90,6 +90,8 @@ function drawPaper({ ctx, d, data, accent, cond, top, artists, host }: Ctx) {
   ctx.font = `500 26px ${MONO}`;
   ctx.fillStyle = MUTED;
   ctx.fillText(`MY ${data.year} DIAGNOSIS`, W / 2, 250);
+  ctx.font = `500 22px ${MONO}`;
+  ctx.fillText('@dietcokecode on instagram', W / 2, 290);
 
   // emoji
   ctx.font = `150px ${BODY}`;
@@ -144,7 +146,7 @@ function drawPaper({ ctx, d, data, accent, cond, top, artists, host }: Ctx) {
 
   ctx.font = `500 22px ${BODY}`;
   ctx.fillStyle = MUTED;
-  ctx.fillText('a parody · not medical advice', W / 2, 1835);
+  ctx.fillText('a parody by @dietcokecode · not medical advice', W / 2, 1835);
 }
 
 export async function renderShareCard(d: Diagnosis, data: WrappedData): Promise<Blob> {

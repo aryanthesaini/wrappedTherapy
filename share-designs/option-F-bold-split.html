@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Option F — Bold Split</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#111;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:60px 40px 40px;
+}
+.label {
+  position:fixed; top:16px; left:50%; transform:translateX(-50%);
+  background:rgba(255,255,255,.1); color:#fff; padding:6px 18px;
+  border-radius:20px; font-size:12px; letter-spacing:.05em; white-space:nowrap;
+}
+
+/* ─── CARD ─── */
+.card {
+  width:405px; height:720px;
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+  flex-shrink:0;
+}
+
+/* ══ TOP: colour block ══ */
+.top {
+  background:#5b8def;
+  flex:0 0 54%;           /* 389px — room for wordmark + name + tagline + artist */
+  padding:28px 32px 24px;
+  display:flex; flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ghost initial */
+.ghost {
+  position:absolute; right:-16px; top:-24px;
+  font:900 200px 'Montserrat',sans-serif;
+  color:rgba(255,255,255,.07);
+  line-height:1; pointer-events:none; user-select:none;
+}
+
+/* wordmark row */
+.top-bar { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+.wm { display:flex; align-items:baseline; gap:5px; }
+.wm-s { font:900 13px 'Montserrat',sans-serif; color:rgba(255,255,255,.8); }
+.wm-i { font:italic 18px 'Instrument Serif',serif; color:rgba(255,255,255,.8); }
+.yr { font:800 10px 'Montserrat',sans-serif; color:rgba(255,255,255,.65); letter-spacing:.18em; border:1px solid rgba(255,255,255,.28); padding:3px 9px; border-radius:4px; }
+.handle { font:600 10px 'Montserrat',sans-serif; color:rgba(255,255,255,.45); letter-spacing:.04em; }
+
+/* name block */
+.name-block { position:relative; z-index:1; }
+.dx-label { font:700 10px 'Montserrat',sans-serif; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.65); margin-bottom:6px; }
+.dx-name {
+  font:900 62px 'Montserrat',sans-serif;
+  color:#fff; letter-spacing:-.04em; line-height:.92;
+  word-break:normal; hyphens:none;    /* words only split at spaces — never mid-word */
+}
+.dx-sub {
+  font:italic 18px 'Instrument Serif',serif;
+  color:rgba(255,255,255,.75); margin-top:9px; line-height:1.3;
+}
+
+/* artist credit lives in the colour block */
+.top-foot {
+  position:relative; z-index:1;
+  font:italic 14px 'Instrument Serif',serif;
+  color:rgba(255,255,255,.55);
+}
+.top-foot b { font:700 11px 'Montserrat',sans-serif; color:rgba(255,255,255,.75); font-style:normal; }
+
+/* ══ BOTTOM: white section ══ */
+.bottom {
+  flex:1;
+  background:#fff;
+  padding:20px 32px 22px;
+  display:flex; flex-direction:column;
+  gap:0;
+}
+
+/* ── confidence row ── */
+.conf-row {
+  display:flex; align-items:center; gap:12px;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(0,0,0,.07);
+  margin-bottom:16px;
+  flex-shrink:0;
+}
+.conf-num { font:900 28px 'Montserrat',sans-serif; color:#141414; letter-spacing:-.03em; }
+.conf-sep { width:1px; height:22px; background:rgba(0,0,0,.12); }
+.conf-match { font:600 10px 'Montserrat',sans-serif; color:rgba(0,0,0,.35); letter-spacing:.06em; margin-bottom:2px; }
+.conf-sev { font:800 13px 'Montserrat',sans-serif; color:#141414; text-transform:uppercase; letter-spacing:.05em; }
+
+/* ── secondary conditions ── */
+.sec-head {
+  font:700 10px 'Montserrat',sans-serif; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(0,0,0,.28); margin-bottom:10px;
+}
+.sec-rows { display:flex; flex-direction:column; gap:9px; margin-bottom:16px; flex-shrink:0; }
+.sec-item-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
+.sec-item-name { font:800 14px 'Montserrat',sans-serif; color:#141414; }
+.sec-item-pct { font:900 16px 'Montserrat',sans-serif; color:#5b8def; letter-spacing:-.01em; }
+.track { width:100%; height:4px; background:rgba(0,0,0,.07); border-radius:2px; overflow:hidden; }
+.fill  { height:100%; border-radius:2px; background:#5b8def; }
+
+/* ── therapists ── */
+.thera-head {
+  font:700 10px 'Montserrat',sans-serif; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(0,0,0,.28); margin-bottom:10px;
+  border-top:1px solid rgba(0,0,0,.07); padding-top:16px;
+  flex-shrink:0;
+}
+.thera-rows { display:flex; flex-direction:column; gap:10px; margin-bottom:0; flex-shrink:0; }
+.thera-row { display:flex; align-items:center; gap:10px; }
+.thera-avatar {
+  width:32px; height:32px; border-radius:50%;
+  background:#5b8def; display:flex; align-items:center; justify-content:center;
+  font:800 11px 'Montserrat',sans-serif; color:#fff; flex-shrink:0;
+  opacity:.85;
+}
+.thera-info {}
+.thera-name { font:800 13px 'Montserrat',sans-serif; color:#141414; line-height:1.2; }
+.thera-sub  { font:600 10px 'Montserrat',sans-serif; color:rgba(0,0,0,.4); margin-top:1px; }
+
+/* ── CTA ── */
+.spacer { flex:1; min-height:12px; }
+.cta {
+  display:flex; align-items:center; justify-content:space-between;
+  background:#141414; border-radius:10px; padding:12px 15px;
+  flex-shrink:0;
+}
+.cta-txt { font:800 13px 'Montserrat',sans-serif; color:#fff; }
+.cta-txt span { display:block; font:600 10px 'Montserrat',sans-serif; color:rgba(255,255,255,.4); letter-spacing:.08em; margin-top:1px; }
+.cta-pill {
+  background:#5b8def; border-radius:50%; width:30px; height:30px;
+  display:flex; align-items:center; justify-content:center;
+  font:900 15px 'Montserrat',sans-serif; color:#fff; flex-shrink:0;
+}
+.byline { font:500 10px 'Montserrat',sans-serif; color:rgba(0,0,0,.28); letter-spacing:.06em; text-align:center; margin-top:9px; }
+</style>
+</head>
+<body>
+<div class="label">F — Bold Split</div>
+<div class="card">
+
+  <!-- ══ TOP ══ -->
+  <div class="top">
+    <div class="ghost">D</div>
+
+    <div class="top-bar">
+      <div class="wm"><span class="wm-s">wrapped</span><span class="wm-i">therapy</span></div>
+      <div class="yr">2024</div>
+    </div>
+    <div class="handle">@dietcokecode</div>
+
+    <div class="name-block">
+      <div class="dx-label">Dr. Playlist diagnoses you with</div>
+      <div class="dx-name">Depression</div>
+      <div class="dx-sub">"Professional sad-song sommelier."</div>
+    </div>
+
+    <div class="top-foot">
+      thanks to <b>Olivia Rodrigo</b> &amp; <b>The Weeknd</b>
+    </div>
+  </div>
+
+  <!-- ══ BOTTOM ══ -->
+  <div class="bottom">
+
+    <!-- confidence -->
+    <div class="conf-row">
+      <div class="conf-num">87%</div>
+      <div class="conf-sep"></div>
+      <div>
+        <div class="conf-match">confidence match</div>
+        <div class="conf-sev">Clinical</div>
+      </div>
+    </div>
+
+    <!-- secondary conditions -->
+    <div class="sec-head">also showing up</div>
+    <div class="sec-rows">
+      <div>
+        <div class="sec-item-top">
+          <div class="sec-item-name">Anxiety</div>
+          <div class="sec-item-pct">34%</div>
+        </div>
+        <div class="track"><div class="fill" style="width:40%"></div></div>
+      </div>
+      <div>
+        <div class="sec-item-top">
+          <div class="sec-item-name">Insomnia</div>
+          <div class="sec-item-pct">12%</div>
+        </div>
+        <div class="track"><div class="fill" style="width:14%"></div></div>
+      </div>
+    </div>
+
+    <!-- therapists -->
+    <div class="thera-head">recommended near you</div>
+    <div class="thera-rows">
+      <div class="thera-row">
+        <div class="thera-avatar">MG</div>
+        <div class="thera-info">
+          <div class="thera-name">Dr. Mukulika Ghose Banerji</div>
+          <div class="thera-sub">Counselling Psychologist · Mumbai</div>
+        </div>
+      </div>
+      <div class="thera-row">
+        <div class="thera-avatar">RS</div>
+        <div class="thera-info">
+          <div class="thera-name">Ms. Riddhi Sagar</div>
+          <div class="thera-sub">Counselling Psychologist · Mumbai</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <div class="cta-txt">Get your diagnosis<span>wrappedtherapy.com</span></div>
+      <div class="cta-pill">↗</div>
+    </div>
+    <div class="byline">built by @dietcokecode on instagram</div>
+
+  </div>
+</div>
+</body>
+</html>

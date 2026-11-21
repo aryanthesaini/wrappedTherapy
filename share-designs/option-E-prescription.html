@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Option E — Prescription</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Instrument+Serif:ital@0,1@0,1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#e8e4de;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center; gap:32px;
+  flex-wrap:wrap; padding:60px 40px 40px;
+}
+.label {
+  position:fixed; top:16px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,.12); color:#1a1a1a; padding:6px 18px;
+  border-radius:20px; font-size:12px; letter-spacing:.05em; white-space:nowrap;
+}
+
+/* ─── CARD ─── */
+.card {
+  width:405px; height:720px;
+  background:#faf7f2;
+  border-radius:4px;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+  position:relative;
+  flex-shrink:0;
+  box-shadow:0 4px 40px rgba(0,0,0,.18), 0 1px 4px rgba(0,0,0,.1);
+}
+
+/* faint grain */
+.card::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.6; z-index:0;
+}
+
+/* HEADER BAND */
+.header-band {
+  background:#141414;
+  padding:20px 28px 18px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  position:relative; z-index:1;
+}
+.hospital { }
+.hosp-name { font:900 11px 'Montserrat',sans-serif; color:#fff; letter-spacing:.12em; text-transform:uppercase; margin-bottom:2px; }
+.hosp-sub { font:500 10px 'DM Mono',monospace; color:rgba(255,255,255,.4); letter-spacing:.05em; }
+.rx-mark { font:italic 500 48px 'Instrument Serif',serif; color:rgba(255,255,255,.12); line-height:1; }
+
+/* BODY */
+.body { flex:1; padding:24px 28px; display:flex; flex-direction:column; position:relative; z-index:1; }
+
+/* patient info */
+.patient-row {
+  display:flex; gap:0; border:1px solid rgba(0,0,0,.12);
+  border-radius:4px; overflow:hidden; margin-bottom:20px;
+}
+.patient-field { flex:1; padding:10px 12px; border-right:1px solid rgba(0,0,0,.08); }
+.patient-field:last-child { border-right:none; }
+.pf-label { font:500 9px 'DM Mono',monospace; color:rgba(0,0,0,.35); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.pf-value { font:700 13px 'Montserrat',sans-serif; color:#141414; }
+
+/* Rx section */
+.rx-section { margin-bottom:18px; }
+.section-label {
+  font:500 10px 'DM Mono',monospace; letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(0,0,0,.3); margin-bottom:10px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-label::after { content:''; flex:1; height:1px; background:rgba(0,0,0,.1); }
+
+/* Rx line */
+.rx-line { display:flex; align-items:flex-start; gap:10px; margin-bottom:14px; }
+.rx-num {
+  font:italic 500 32px 'Instrument Serif',serif;
+  color:rgba(0,0,0,.18); line-height:1; flex-shrink:0; margin-top:4px;
+}
+.rx-content {}
+.rx-name {
+  font:italic 48px 'Instrument Serif',serif;
+  color:#141414; line-height:1;
+  word-break:break-word;
+}
+.rx-dose { font:600 11px 'Montserrat',sans-serif; color:rgba(0,0,0,.45); margin-top:3px; }
+
+/* confidence */
+.conf-row {
+  display:flex; align-items:center; gap:14px; margin-bottom:18px;
+  background:rgba(0,0,0,.04); border-radius:6px; padding:12px 14px;
+}
+.conf-num { font:900 32px 'Montserrat',sans-serif; color:#141414; letter-spacing:-.03em; }
+.conf-sep { width:1px; height:28px; background:rgba(0,0,0,.12); }
+.conf-right {}
+.conf-match { font:500 10px 'DM Mono',monospace; color:rgba(0,0,0,.35); letter-spacing:.08em; margin-bottom:2px; }
+.conf-sev { font:800 13px 'Montserrat',sans-serif; color:#141414; text-transform:uppercase; letter-spacing:.08em; }
+
+/* secondary */
+.also-label { font:500 10px 'DM Mono',monospace; letter-spacing:.12em; text-transform:uppercase; color:rgba(0,0,0,.3); margin-bottom:10px;
+  display:flex; align-items:center; gap:10px; }
+.also-label::after { content:''; flex:1; height:1px; background:rgba(0,0,0,.1); }
+.also-rows { display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
+.also-row { display:flex; align-items:center; gap:10px; }
+.also-name { font:700 13px 'Montserrat',sans-serif; color:rgba(0,0,0,.7); width:76px; flex-shrink:0; }
+.also-track { flex:1; height:5px; background:rgba(0,0,0,.08); border-radius:3px; overflow:hidden; }
+.also-fill { height:100%; background:#141414; border-radius:3px; opacity:.5; }
+.also-pct { font:700 12px 'Montserrat',sans-serif; color:rgba(0,0,0,.45); width:30px; text-align:right; flex-shrink:0; }
+
+/* signature + CTA */
+.spacer { flex:1; }
+.sig-row { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:14px; border-top:1px solid rgba(0,0,0,.1); padding-top:12px; }
+.sig-left {}
+.sig-name { font:italic 22px 'Instrument Serif',serif; color:#141414; margin-bottom:1px; }
+.sig-title { font:500 10px 'DM Mono',monospace; color:rgba(0,0,0,.35); letter-spacing:.08em; }
+.sig-date { font:500 10px 'DM Mono',monospace; color:rgba(0,0,0,.35); letter-spacing:.08em; }
+
+/* CTA */
+.cta {
+  display:flex; align-items:center; justify-content:space-between;
+  background:#141414; border-radius:6px; padding:13px 16px;
+}
+.cta-txt { font:800 13px 'Montserrat',sans-serif; color:#fff; }
+.cta-txt span { display:block; font:500 10px 'DM Mono',monospace; color:rgba(255,255,255,.4); letter-spacing:.08em; margin-top:2px; }
+.cta-arrow { font-size:20px; color:rgba(255,255,255,.8); }
+</style>
+</head>
+<body>
+<div class="label">E — Prescription</div>
+<div class="card">
+  <!-- HEADER -->
+  <div class="header-band">
+    <div class="hospital">
+      <div class="hosp-name">Wrapped Pharmacy</div>
+      <div class="hosp-sub">Dept. of Questionable Listening · 2024</div>
+    </div>
+    <div class="rx-mark">℞</div>
+  </div>
+
+  <div class="body">
+    <!-- PATIENT -->
+    <div class="patient-row">
+      <div class="patient-field">
+        <div class="pf-label">Patient</div>
+        <div class="pf-value">You</div>
+      </div>
+      <div class="patient-field">
+        <div class="pf-label">Prescribed by</div>
+        <div class="pf-value">Dr. Playlist</div>
+      </div>
+      <div class="patient-field">
+        <div class="pf-label">Date</div>
+        <div class="pf-value">2024</div>
+      </div>
+    </div>
+
+    <!-- RX -->
+    <div class="rx-section">
+      <div class="section-label">℞ Prescription</div>
+      <div class="rx-line">
+        <div class="rx-num">1.</div>
+        <div class="rx-content">
+          <div class="rx-name">Depression</div>
+          <div class="rx-dose">"Professional sad-song sommelier." — take as needed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIDENCE -->
+    <div class="conf-row">
+      <div class="conf-num">87%</div>
+      <div class="conf-sep"></div>
+      <div class="conf-right">
+        <div class="conf-match">confidence match</div>
+        <div class="conf-sev">Clinical</div>
+      </div>
+    </div>
+
+    <!-- SECONDARY -->
+    <div class="also-label">Also detected</div>
+    <div class="also-rows">
+      <div class="also-row">
+        <div class="also-name">Anxiety</div>
+        <div class="also-track"><div class="also-fill" style="width:40%"></div></div>
+        <div class="also-pct">34%</div>
+      </div>
+      <div class="also-row">
+        <div class="also-name">Insomnia</div>
+        <div class="also-track"><div class="also-fill" style="width:14%"></div></div>
+        <div class="also-pct">12%</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- SIGNATURE -->
+    <div class="sig-row">
+      <div class="sig-left">
+        <div class="sig-name">Dr. Playlist MD</div>
+        <div class="sig-title">Dept. of Questionable Listening</div>
+      </div>
+      <div class="sig-date">thanks to Olivia Rodrigo &amp; The Weeknd</div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <div class="cta-txt">Get your diagnosis<span>wrappedtherapy.com</span></div>
+      <div class="cta-arrow">↗</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

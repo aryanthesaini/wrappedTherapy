@@ -16,7 +16,7 @@ export default function ShareSheet({ diagnosis, data, onClose }: Props) {
   const [url, setUrl] = useState<string>();
   const [status, setStatus] = useState<string>();
   const cond = CONDITION_BY_ID[diagnosis.primary];
-  const text = `Dr. Playlist diagnosed my ${data.year} recap: ${cond.emoji} ${cond.short}. Get yours → ${location.origin}`;
+  const text = `Dr. Playlist diagnosed my ${data.year} recap: ${cond.emoji} ${cond.short}. Get yours → ${location.origin}\n\nbuilt by @dietcokecode on instagram`;
 
   useEffect(() => {
     let alive = true;

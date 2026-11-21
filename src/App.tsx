@@ -128,7 +128,12 @@ export default function App() {
           <span>Actually not okay?</span> Talk to a real person. India: <b>Tele-MANAS 14416</b> (24×7, free) · US: <b>988</b> ·{' '}
           <a href="https://findahelpline.com" target="_blank" rel="noreferrer">findahelpline.com</a>
         </p>
-        <p className="fine">A parody. No playlists were diagnosed, some were judged. Therapists shown are fictional.</p>
+        <p className="fine">A parody. No playlists were diagnosed, some were judged.</p>
+        <p className="fine">
+          built by{' '}
+          <a href="https://instagram.com/dietcokecode" target="_blank" rel="noreferrer">@dietcokecode</a>
+          {' '}on instagram
+        </p>
       </footer>
     </>
   );

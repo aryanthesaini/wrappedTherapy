@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Option A — Spotify Dark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #111;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 60px 40px 40px;
+  font-family: system-ui;
+}
+.label {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,.1); color: #fff; padding: 6px 18px;
+  border-radius: 20px; font-size: 12px; letter-spacing: .05em; white-space: nowrap;
+}
+
+/* ─── CARD ─── */
+.card {
+  width: 405px; height: 720px;
+  background: #121212;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 36px 30px;
+  position: relative;
+  flex-shrink: 0;
+}
+/* ambient glow */
+.card::after {
+  content:''; position:absolute;
+  top:-100px; left:-80px; width:280px; height:280px;
+  background: radial-gradient(circle,rgba(30,215,96,.14) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* wordmark */
+.wm { display:flex; align-items:baseline; gap:5px; position:relative; z-index:1; }
+.wm-s { font:900 14px 'Montserrat',sans-serif; color:#fff; letter-spacing:-.01em; }
+.wm-i { font:italic 19px 'Instrument Serif',serif; color:#1ED760; }
+
+.spacer { flex:1; }
+
+/* label above name */
+.dx-label {
+  font: 700 10px 'Montserrat', sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 10px;
+  position: relative; z-index:1;
+}
+
+/* diagnosis name */
+.dx-name {
+  font: italic 64px 'Instrument Serif', serif;
+  color: #fff;
+  line-height: 1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  position: relative; z-index:1;
+  margin-bottom: 10px;
+}
+
+/* tagline */
+.tagline {
+  font: 600 13px 'Montserrat', sans-serif;
+  color: rgba(255,255,255,.4);
+  line-height: 1.4;
+  margin-bottom: 28px;
+  position: relative; z-index:1;
+}
+
+/* stat — compact row */
+.stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 28px;
+  position: relative; z-index:1;
+}
+.stat-num {
+  font: 900 42px 'Montserrat', sans-serif;
+  letter-spacing: -.03em;
+  color: #1ED760;
+}
+.stat-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-match { font: 700 11px 'Montserrat', sans-serif; color: rgba(255,255,255,.5); letter-spacing:.05em; }
+.stat-sev   { font: 800 13px 'Montserrat', sans-serif; color: #fff; letter-spacing:.04em; text-transform:uppercase; }
+
+/* divider */
+.div { width:100%; height:1px; background:rgba(255,255,255,.08); margin-bottom:22px; position:relative; z-index:1; }
+
+/* secondary conditions — bar chart */
+.sec-title {
+  font: 700 10px 'Montserrat', sans-serif;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 14px;
+  position: relative; z-index:1;
+}
+.sec-list { display:flex; flex-direction:column; gap:11px; margin-bottom:28px; position:relative; z-index:1; }
+.sec-row { display:flex; align-items:center; gap:10px; }
+.sec-name { font:700 12px 'Montserrat',sans-serif; color:rgba(255,255,255,.65); width:90px; flex-shrink:0; }
+.sec-bar-wrap { flex:1; height:5px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
+.sec-bar { height:100%; background:#1ED760; border-radius:3px; opacity:.7; }
+.sec-pct { font:700 11px 'Montserrat',sans-serif; color:rgba(255,255,255,.45); width:32px; text-align:right; flex-shrink:0; }
+
+/* artist line */
+.artists {
+  font: italic 17px 'Instrument Serif', serif;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 24px;
+  position: relative; z-index:1;
+}
+.artists strong { font:800 11px 'Montserrat',sans-serif; color:rgba(255,255,255,.65); font-style:normal; }
+
+/* CTA */
+.cta {
+  width:100%; background:#1ED760; border-radius:50px;
+  padding:14px; text-align:center;
+  font:800 14px 'Montserrat',sans-serif;
+  color:#000; letter-spacing:.03em;
+  position:relative; z-index:1;
+  margin-bottom:10px;
+}
+.cta-url {
+  font:600 10px 'Montserrat',sans-serif;
+  color:#333; letter-spacing:.1em;
+  text-align:center;
+  position:relative; z-index:1;
+}
+</style>
+</head>
+<body>
+<div class="label">A — Spotify Dark</div>
+<div class="card">
+  <div class="wm"><span class="wm-s">wrapped</span><span class="wm-i">therapy</span></div>
+  <div class="spacer"></div>
+
+  <div class="dx-label">Dr. Playlist diagnoses you with</div>
+  <div class="dx-name">Depression</div>
+  <div class="tagline">"Professional sad-song sommelier."</div>
+
+  <div class="stat-row">
+    <div class="stat-num">87%</div>
+    <div class="stat-meta">
+      <div class="stat-match">confidence match</div>
+      <div class="stat-sev">Clinical</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec-title">also showing up</div>
+  <div class="sec-list">
+    <div class="sec-row">
+      <div class="sec-name">Anxiety</div>
+      <div class="sec-bar-wrap"><div class="sec-bar" style="width:39%"></div></div>
+      <div class="sec-pct">34%</div>
+    </div>
+    <div class="sec-row">
+      <div class="sec-name">Insomnia</div>
+      <div class="sec-bar-wrap"><div class="sec-bar" style="width:14%"></div></div>
+      <div class="sec-pct">12%</div>
+    </div>
+  </div>
+
+  <div class="artists">thanks to <strong>Olivia Rodrigo</strong> &amp; <strong>The Weeknd</strong></div>
+
+  <div class="cta">Get your diagnosis →</div>
+  <div class="cta-url">WRAPPEDTHERAPY.COM</div>
+</div>
+</body>
+</html>

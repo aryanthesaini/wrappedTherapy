@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Option C — Concert Ticket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#0a0a0a;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center; gap:32px;
+  flex-wrap:wrap; padding:60px 40px 40px;
+}
+.label {
+  position:fixed; top:16px; left:50%; transform:translateX(-50%);
+  background:rgba(255,255,255,.08); color:#fff; padding:6px 18px;
+  border-radius:20px; font-size:12px; letter-spacing:.05em; white-space:nowrap;
+}
+
+/* ─── CARD ─── */
+.card {
+  width:405px; height:720px;
+  background:#0d0d0d;
+  border-radius:20px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  flex-shrink:0;
+  border:1px solid rgba(255,255,255,.07);
+}
+
+/* ── TOP: concert poster ── */
+.top {
+  flex:0 0 auto;
+  padding:30px 32px 24px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+/* scan-line texture */
+.top::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);
+  pointer-events:none;
+}
+.presents {
+  font:700 10px 'Montserrat',sans-serif;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:rgba(255,255,255,.25); margin-bottom:5px; position:relative; z-index:1;
+}
+.wm { display:flex; align-items:baseline; gap:5px; margin-bottom:20px; position:relative; z-index:1; }
+.wm-s { font:900 15px 'Montserrat',sans-serif; color:#fff; }
+.wm-i { font:italic 20px 'Instrument Serif',serif; color:#5b8def; }
+
+/* headliner label */
+.headliner-label {
+  font:700 10px 'Montserrat',sans-serif;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:rgba(255,255,255,.3); margin-bottom:6px; position:relative; z-index:1;
+}
+/* artist names — the "act" */
+.headliner {
+  font:900 36px 'Montserrat',sans-serif;
+  color:#fff; letter-spacing:-.03em; line-height:.95;
+  text-transform:uppercase;
+  word-break:break-word;
+  margin-bottom:5px; position:relative; z-index:1;
+}
+.headliner .amp { font:italic 400 44px 'Instrument Serif',serif; color:#5b8def; vertical-align:bottom; }
+.feat {
+  font:italic 17px 'Instrument Serif',serif;
+  color:rgba(255,255,255,.4); margin-bottom:0; position:relative; z-index:1;
+}
+
+/* ── TEAR LINE ── */
+.tear { display:flex; align-items:center; height:28px; flex-shrink:0; }
+.notch { width:28px; height:28px; border-radius:50%; background:#0a0a0a; flex-shrink:0; }
+.dash { flex:1; height:1px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0,rgba(255,255,255,.18) 8px,transparent 8px,transparent 14px); }
+
+/* ── BOTTOM: ticket stub ── */
+.bottom {
+  flex:1; background:#141414;
+  padding:22px 32px 24px;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+
+/* diagnosis row */
+.dx-row {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.07); padding-bottom:16px; margin-bottom:16px;
+}
+.field {}
+.field-label { font:700 10px 'Montserrat',sans-serif; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.25); margin-bottom:4px; }
+.field-value { font:italic 32px 'Instrument Serif',serif; color:#5b8def; word-break:break-word; }
+.field-value-sm { font:800 16px 'Montserrat',sans-serif; color:#fff; }
+.field-value-num { font:900 32px 'Montserrat',sans-serif; letter-spacing:-.02em; color:#fff; }
+
+/* secondary conditions — prominent */
+.sec-section {
+  border-bottom:1px solid rgba(255,255,255,.07); padding-bottom:14px; margin-bottom:14px;
+}
+.sec-label { font:700 10px 'Montserrat',sans-serif; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.25); margin-bottom:10px; }
+.sec-row-item { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.sec-row-item:last-child { margin-bottom:0; }
+.sec-name { font:700 14px 'Montserrat',sans-serif; color:rgba(255,255,255,.75); }
+.sec-track { flex:1; height:4px; background:rgba(255,255,255,.07); border-radius:2px; margin:0 12px; overflow:hidden; }
+.sec-fill { height:100%; border-radius:2px; background:#5b8def; opacity:.8; }
+.sec-pct { font:800 13px 'Montserrat',sans-serif; color:rgba(255,255,255,.55); }
+
+/* CTA */
+.cta {
+  margin-top:auto;
+  display:flex; align-items:center; justify-content:space-between;
+  background:#5b8def; border-radius:12px; padding:13px 16px;
+}
+.cta-l { font:800 13px 'Montserrat',sans-serif; color:#fff; }
+.cta-l span { display:block; font:600 10px 'Montserrat',sans-serif; color:rgba(255,255,255,.65); letter-spacing:.08em; margin-top:2px; }
+.cta-arrow { font:900 22px 'Montserrat',sans-serif; color:#fff; }
+
+/* barcode */
+.barcode-wrap { display:flex; flex-direction:column; align-items:center; gap:5px; margin-top:12px; }
+.barcode { display:flex; gap:2px; height:24px; align-items:flex-end; }
+.barcode span { display:block; background:rgba(255,255,255,.25); border-radius:1px; }
+.barcode-num { font:600 8px 'Montserrat',sans-serif; letter-spacing:.2em; color:rgba(255,255,255,.18); }
+</style>
+</head>
+<body>
+<div class="label">C — Concert Ticket</div>
+<div class="card">
+
+  <!-- TOP -->
+  <div class="top">
+    <div class="presents">wrappedtherapy presents</div>
+    <div class="wm"><span class="wm-s">wrapped</span><span class="wm-i">therapy</span></div>
+    <div class="headliner-label">headliner</div>
+    <div class="headliner">Olivia<br>Rodrigo <span class="amp">&amp;</span><br>The Weeknd</div>
+    <div class="feat">feat. your 2024 listening habits</div>
+  </div>
+
+  <!-- TEAR -->
+  <div class="tear"><div class="notch"></div><div class="dash"></div><div class="notch"></div></div>
+
+  <!-- BOTTOM -->
+  <div class="bottom">
+    <div class="dx-row">
+      <div class="field">
+        <div class="field-label">diagnosis</div>
+        <div class="field-value">Depression</div>
+      </div>
+      <div class="field" style="text-align:right">
+        <div class="field-label">confidence</div>
+        <div class="field-value-num">87%</div>
+        <div class="field-label" style="margin-top:4px">severity</div>
+        <div class="field-value-sm">Clinical</div>
+      </div>
+    </div>
+
+    <div class="sec-section">
+      <div class="sec-label">also detected</div>
+      <div class="sec-row-item">
+        <div class="sec-name">Anxiety</div>
+        <div class="sec-track"><div class="sec-fill" style="width:40%"></div></div>
+        <div class="sec-pct">34%</div>
+      </div>
+      <div class="sec-row-item">
+        <div class="sec-name">Insomnia</div>
+        <div class="sec-track"><div class="sec-fill" style="width:14%"></div></div>
+        <div class="sec-pct">12%</div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="cta-l">Get your diagnosis<span>wrappedtherapy.com</span></div>
+      <div class="cta-arrow">↗</div>
+    </div>
+
+    <div class="barcode-wrap">
+      <div class="barcode">
+        <span style="width:3px;height:22px"></span><span style="width:1px;height:16px"></span><span style="width:2px;height:22px"></span><span style="width:1px;height:12px"></span><span style="width:3px;height:22px"></span><span style="width:1px;height:17px"></span><span style="width:2px;height:22px"></span><span style="width:1px;height:11px"></span><span style="width:3px;height:22px"></span><span style="width:2px;height:14px"></span><span style="width:1px;height:22px"></span><span style="width:3px;height:19px"></span><span style="width:1px;height:22px"></span><span style="width:2px;height:13px"></span><span style="width:3px;height:22px"></span><span style="width:1px;height:16px"></span><span style="width:2px;height:22px"></span><span style="width:1px;height:22px"></span><span style="width:3px;height:18px"></span><span style="width:2px;height:22px"></span>
+      </div>
+      <div class="barcode-num">WT · 2024 · DEPRESSION · 87PCT</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
