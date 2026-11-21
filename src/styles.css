@@ -451,9 +451,9 @@ code { font-family: var(--f-mono); font-size: .85em; }
 .sheet h3 { font-size: 20px; padding-right: 40px; }
 .sheet-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); font-size: 14px; }
 .sheet-close:hover { background: var(--note-b); }
-.sheet-preview { width: min(100%, calc(62dvh * 9 / 16)); aspect-ratio: 9 / 16; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1.5px solid var(--line); background: var(--card); display: grid; place-items: center; }
-.sheet-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.sheet-loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; padding: 40px; }
+.sheet-preview { width: 100%; border-radius: 16px; overflow: hidden; border: 1.5px solid var(--line); background: var(--card); }
+.sheet-preview img { display: block; width: 100%; height: auto; }
+.sheet-loading { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--muted); font-size: 14px; padding: 40px; min-height: 200px; }
 .sheet-actions { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
 .sheet-actions .cta { width: 100%; justify-content: center; text-decoration: none; }
 .sheet-actions .cta.disabled { opacity: .4; pointer-events: none; }
