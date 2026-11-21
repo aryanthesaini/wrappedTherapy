@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import type { Diagnosis, Platform, WrappedData } from './types';
 import { parseWrapped, type ParseProgress } from './lib/parser';
 import type { Diagnostics, ParseResult } from './lib/extract';
@@ -136,6 +137,7 @@ export default function App() {
           {' '}on instagram
         </p>
       </footer>
+      <Analytics />
     </>
   );
 }
