@@ -86,7 +86,7 @@ export default function App() {
             <span>wrapped<em>therapy</em></span>
           </button>
           <div className="nav-right">
-            <a className="nav-credit" href="https://instagram.com/dietcokecode" target="_blank" rel="noreferrer">@dietcokecode</a>
+            <a className="nav-credit" href="https://www.instagram.com/dietcokecode/" target="_blank" rel="noreferrer">@dietcokecode</a>
             {DEBUG && (
               <button className="nav-link" onClick={() => setTab(tab === 'lab' ? 'app' : 'lab')}>
                 {tab === 'lab' ? 'back to app' : 'data lab'}
@@ -132,7 +132,7 @@ export default function App() {
         <p className="fine">A parody. No playlists were diagnosed, some were judged.</p>
         <p className="fine">
           built by{' '}
-          <a href="https://instagram.com/dietcokecode" target="_blank" rel="noreferrer">@dietcokecode</a>
+          <a href="https://www.instagram.com/dietcokecode/" target="_blank" rel="noreferrer">@dietcokecode</a>
           {' '}on instagram
         </p>
       </footer>

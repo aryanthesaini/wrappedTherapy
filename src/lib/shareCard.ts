@@ -38,6 +38,13 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath();
 }
 
+function isLightAccent(hex: string): boolean {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5;
+}
+
 function fitFont(ctx: CanvasRenderingContext2D, text: string, font: (px: number) => string, width: number, max: number, min: number) {
   let px = max;
   ctx.font = font(px);
@@ -67,19 +74,30 @@ function drawOptionF({ ctx, d, data, accent, cond, top, artists, host }: Ctx, th
   ctx.fillStyle = accent;
   ctx.fillRect(0, 0, W, TOP_H);
 
-  // Ghost initial — large, 7% white, bleeds off the right edge
+  // Adapt text colours to accent luminance so light/yellow accents stay readable
+  const light = isLightAccent(accent);
+  const topFg    = light ? INK   : WHITE;
+  const topFg80  = light ? 'rgba(0,0,0,0.80)' : 'rgba(255,255,255,0.80)';
+  const topFg65  = light ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.65)';
+  const topFg45  = light ? 'rgba(0,0,0,0.50)' : 'rgba(255,255,255,0.45)';
+  const topFg75  = light ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.75)';
+  const topFg55  = light ? 'rgba(0,0,0,0.60)' : 'rgba(255,255,255,0.55)';
+  const ghostClr = light ? 'rgba(0,0,0,0.07)'  : 'rgba(255,255,255,0.07)';
+  const badgeBdr = light ? 'rgba(0,0,0,0.28)'  : 'rgba(255,255,255,0.28)';
+
+  // Ghost initial — large, bleeds off the right edge
   ctx.save();
   ctx.textAlign = 'right';
   ctx.textBaseline = 'alphabetic';
   ctx.font = `900 530px ${DISPLAY}`;
-  ctx.fillStyle = 'rgba(255,255,255,0.07)';
+  ctx.fillStyle = ghostClr;
   ctx.fillText(cond.short[0].toUpperCase(), W + 42, 420);
   ctx.restore();
 
   // Wordmark: "wrapped" (Unbounded 700) + "therapy" (Instrument Serif italic)
   ctx.textBaseline = 'alphabetic';
   ctx.textAlign = 'left';
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.fillStyle = topFg80;
   ctx.font = `700 36px ${DISPLAY}`;
   const ww = ctx.measureText('wrapped').width;
   ctx.fillText('wrapped', PAD, 165);
@@ -92,39 +110,40 @@ function drawOptionF({ ctx, d, data, accent, cond, top, artists, host }: Ctx, th
   const yrW = ctx.measureText(yr).width;
   const badgeW = yrW + 48;
   const badgeX = W - PAD - badgeW;
-  ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+  ctx.strokeStyle = badgeBdr;
   ctx.lineWidth = 2.5;
   roundRect(ctx, badgeX, 136, badgeW, 44, 10);
   ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.fillStyle = topFg65;
   ctx.fillText(yr, badgeX + 24, 165);
 
   // Handle — sits just below the wordmark row
   ctx.font = `500 26px ${BODY}`;
-  ctx.fillStyle = 'rgba(255,255,255,0.45)';
+  ctx.fillStyle = topFg45;
   ctx.fillText('@dietcokecode', PAD, 215);
 
   // Diagnosis label
   ctx.font = `500 27px ${BODY}`;
-  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.fillStyle = topFg65;
   ctx.fillText('Dr. Playlist diagnoses you with', PAD, 510);
 
   // Condition name — scaled to fit the full available width
   const namePx = fitFont(ctx, cond.short, (p) => `900 ${p}px ${DISPLAY}`, W - PAD * 2, 165, 48);
-  ctx.fillStyle = WHITE;
+  ctx.fillStyle = topFg;
   ctx.fillText(cond.short, PAD, 510 + 36 + namePx);
   const nameBaseY = 510 + 36 + namePx;
 
-  // Tagline
+  // Tagline — offset scales with the condition name size to prevent overlap
+  const taglineY = nameBaseY + Math.max(70, namePx * 0.5 + 10);
   fitFont(ctx, `"${cond.tagline}"`, (p) => `italic ${p}px ${SERIF}`, W - PAD * 2, 48, 28);
-  ctx.fillStyle = 'rgba(255,255,255,0.75)';
-  ctx.fillText(`"${cond.tagline}"`, PAD, nameBaseY + 70);
+  ctx.fillStyle = topFg75;
+  ctx.fillText(`"${cond.tagline}"`, PAD, taglineY);
 
   // Artist credit — anchored near the bottom of the colour block
   if (artists.length) {
     const thanks = `thanks to ${artists.join(' & ')}`;
     fitFont(ctx, thanks, (p) => `italic ${p}px ${SERIF}`, W - PAD * 2, 40, 26);
-    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.fillStyle = topFg55;
     ctx.fillText(thanks, PAD, TOP_H - 68);
   }
 
@@ -182,8 +201,7 @@ function drawOptionF({ ctx, d, data, accent, cond, top, artists, host }: Ctx, th
       ctx.fillStyle = accent;
       ctx.textAlign = 'right';
       ctx.fillText(`${pct}%`, W - PAD, bY);
-      bY += 22;
-
+      bY += 26;
       ctx.fillStyle = 'rgba(0,0,0,0.07)';
       roundRect(ctx, PAD, bY, barW, 11, 5);
       ctx.fill();
@@ -192,7 +210,7 @@ function drawOptionF({ ctx, d, data, accent, cond, top, artists, host }: Ctx, th
         roundRect(ctx, PAD, bY, fillW, 11, 5);
         ctx.fill();
       }
-      bY += 42;
+      bY += 56;
     }
     bY += 4;
   }
@@ -291,7 +309,7 @@ function drawOptionF({ ctx, d, data, accent, cond, top, artists, host }: Ctx, th
   ctx.font = `500 24px ${BODY}`;
   ctx.fillStyle = 'rgba(0,0,0,0.28)';
   ctx.textAlign = 'center';
-  ctx.fillText('built by @dietcokecode on instagram', W / 2, bY);
+  ctx.fillText('instagram.com/dietcokecode · built by @dietcokecode', W / 2, bY);
 }
 
 export async function renderShareCard(d: Diagnosis, data: WrappedData, therapists: Therapist[] = []): Promise<Blob> {

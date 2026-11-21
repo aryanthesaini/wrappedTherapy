@@ -55,7 +55,7 @@ export default function Upload({ onFile, onManual }: Props) {
             </div>
             <p className="hero-byline">
               built by{' '}
-              <a href="https://instagram.com/dietcokecode" target="_blank" rel="noreferrer">@dietcokecode</a>
+              <a href="https://www.instagram.com/dietcokecode/" target="_blank" rel="noreferrer">@dietcokecode</a>
               {' '}on instagram
             </p>
           </div>
